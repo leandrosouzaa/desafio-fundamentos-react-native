@@ -38,6 +38,7 @@ const CartProvider: React.FC = ({ children }) => {
 
   const increment = useCallback(
     async id => {
+      // Percorre o array de products e adiciona +1 no produto selecionado
       const productsUpdated = products.map(p => {
         if (p.id === id) {
           p.quantity += 1;
@@ -45,6 +46,7 @@ const CartProvider: React.FC = ({ children }) => {
         return p;
       });
 
+      // Seta os produtos alterados
       setProducts(productsUpdated);
     },
     [products],
