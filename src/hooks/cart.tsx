@@ -47,7 +47,6 @@ const CartProvider: React.FC = ({ children }) => {
   const addToCart = useCallback(
     async product => {
       const checkProductExistInCart = products.find(p => product.id === p.id);
-      console.log(checkProductExistInCart);
 
       if (checkProductExistInCart) {
         increment(product.id);
