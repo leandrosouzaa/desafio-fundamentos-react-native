@@ -43,7 +43,7 @@ const Cart: React.FC = () => {
   }
 
   function handleDecrement(id: string): void {
-    // TODO
+    decrement(id);
   }
 
   const cartTotal = useMemo(() => {

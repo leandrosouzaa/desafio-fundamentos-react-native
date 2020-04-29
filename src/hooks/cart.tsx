@@ -52,9 +52,35 @@ const CartProvider: React.FC = ({ children }) => {
     [products],
   );
 
-  const decrement = useCallback(async id => {
-    // TODO DECREMENTS A PRODUCT QUANTITY IN THE CART
-  }, []);
+  const decrement = useCallback(
+    async id => {
+      const product = products.find(p => p.id === id);
+
+      if (!product) {
+        return console.log('Produto não encontrado');
+      }
+
+      if (product.quantity <= 1) {
+        console.log('oi');
+        const productsDeleted = products.filter(p => p.id !== id);
+        setProducts(productsDeleted);
+
+        return products;
+      }
+
+      const productsUpdated = products.map(p => {
+        if (p.id === id) {
+          p.quantity -= 1;
+        }
+        return p;
+      });
+
+      setProducts(productsUpdated);
+
+      return products;
+    },
+    [products],
+  );
 
   const addToCart = useCallback(
     async product => {
