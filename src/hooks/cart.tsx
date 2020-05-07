@@ -30,7 +30,12 @@ const CartProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function loadProducts(): Promise<void> {
-      // TODO LOAD ITEMS FROM ASYNC STORAGE
+      const productsInStorage = await AsyncStorage.getItem(
+        '@GoMarketplace:products',
+      );
+      if (productsInStorage) {
+        setProducts(JSON.parse(productsInStorage));
+      }
     }
 
     loadProducts();
@@ -38,7 +43,6 @@ const CartProvider: React.FC = ({ children }) => {
 
   const increment = useCallback(
     async id => {
-      // Percorre o array de products e adiciona +1 no produto selecionado
       const productsUpdated = products.map(p => {
         if (p.id === id) {
           p.quantity += 1;
@@ -46,8 +50,12 @@ const CartProvider: React.FC = ({ children }) => {
         return p;
       });
 
-      // Seta os produtos alterados
-      setProducts(productsUpdated);
+      await setProducts(productsUpdated);
+
+      await AsyncStorage.setItem(
+        '@GoMarketplace:products',
+        JSON.stringify(products),
+      );
     },
     [products],
   );
@@ -61,7 +69,6 @@ const CartProvider: React.FC = ({ children }) => {
       }
 
       if (product.quantity <= 1) {
-        console.log('oi');
         const productsDeleted = products.filter(p => p.id !== id);
         setProducts(productsDeleted);
 
@@ -75,7 +82,12 @@ const CartProvider: React.FC = ({ children }) => {
         return p;
       });
 
-      setProducts(productsUpdated);
+      await setProducts(productsUpdated);
+
+      await AsyncStorage.setItem(
+        '@GoMarketplace:products',
+        JSON.stringify(products),
+      );
 
       return products;
     },
@@ -84,17 +96,18 @@ const CartProvider: React.FC = ({ children }) => {
 
   const addToCart = useCallback(
     async product => {
-      // Verifica se o produto já está no carrinho
       const checkProductExistInCart = products.find(p => product.id === p.id);
 
-      // Se já estiver adiciona +1 na quantidade do produto
       if (checkProductExistInCart) {
         increment(product.id);
         return;
       }
 
-      // Seta os produtos.
       setProducts([...products, { ...product, quantity: 1 }]);
+      await AsyncStorage.setItem(
+        '@GoMarketplace:products',
+        JSON.stringify(products),
+      );
     },
     [increment, products],
   );
