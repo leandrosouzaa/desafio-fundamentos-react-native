@@ -54,7 +54,7 @@ const CartProvider: React.FC = ({ children }) => {
 
       await AsyncStorage.setItem(
         '@GoMarketplace:products',
-        JSON.stringify(products),
+        JSON.stringify(productsUpdated),
       );
     },
     [products],
@@ -64,13 +64,14 @@ const CartProvider: React.FC = ({ children }) => {
     async id => {
       const product = products.find(p => p.id === id);
 
-      if (!product) {
-        return console.log('Produto não encontrado');
-      }
-
-      if (product.quantity <= 1) {
+      if (product?.quantity <= 1) {
         const productsDeleted = products.filter(p => p.id !== id);
         setProducts(productsDeleted);
+
+        await AsyncStorage.setItem(
+          '@GoMarketplace:products',
+          JSON.stringify(productsDeleted),
+        );
 
         return products;
       }
@@ -86,7 +87,7 @@ const CartProvider: React.FC = ({ children }) => {
 
       await AsyncStorage.setItem(
         '@GoMarketplace:products',
-        JSON.stringify(products),
+        JSON.stringify(productsUpdated),
       );
 
       return products;
